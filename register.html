@@ -45,12 +45,13 @@
         <label for="studentId">Student ID</label>
         <input type="text" id="studentId" placeholder="Enter your student ID" required>
 
+
         <label for="event">Select Event</label>
         <select id="event" required>
-            <option value="">Choose an event</option>
-            <option>Technical Symposium</option>
-            <option>Campus Hackathon</option>
-            <option>Coding Competition</option>
+          <option value="">Choose an event</option>
+          <option value="Technical Symposium">Technical Symposium</option>
+          <option value="Campus Hackathon">Campus Hackathon</option>
+          <option value="Coding Competition">Coding Competition</option>
         </select>
 
         <button type="submit" class="btn submit-btn">
@@ -72,19 +73,20 @@
     <p>© 2026 CampusConnect. All Rights Reserved.</p>
 </footer>
 
+
 <script>
     const form = document.getElementById("registrationForm");
     const message = document.getElementById("message");
 
     // Automatically select event from the Events page
-    const selectedEvent = new URLSearchParams(window.location.search)
+    const selectedEventFromURL = new URLSearchParams(window.location.search)
         .get("event");
 
-    if (selectedEvent) {
+    if (selectedEventFromURL) {
         const eventSelect = document.getElementById("event");
 
         for (const option of eventSelect.options) {
-            if (option.text === selectedEvent) {
+            if (option.text.trim() === selectedEventFromURL.trim()) {
                 eventSelect.value = option.value;
                 break;
             }
@@ -96,22 +98,69 @@
 
         event.preventDefault();
 
+        // Validate form
         if (!form.checkValidity()) {
             form.reportValidity();
             return;
         }
 
+        // Get student details
         const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const mobile = document.getElementById("mobile_no").value.trim();
+        const studentId = document.getElementById("studentId").value.trim().toLowerCase();
         const selected = document.getElementById("event").value;
 
+        // Get existing registrations
+        let registrations = JSON.parse(
+            localStorage.getItem("registrations")
+        ) || [];
+
+        // Check for duplicate registration
+        const alreadyRegistered = registrations.some(registration =>
+            registration.studentId.toLowerCase() === studentId &&
+            registration.event === selected
+        );
+
+        // Prevent duplicate registration
+        if (alreadyRegistered) {
+            message.textContent =
+                "You have already registered for this event.";
+
+            message.className = "success-message error";
+            return;
+        }
+
+        // Create new registration
+        const newRegistration = {
+            name: name,
+            email: email,
+            mobile: mobile,
+            studentId: studentId,
+            event: selected
+        };
+
+        // Save registration
+        registrations.push(newRegistration);
+
+        localStorage.setItem(
+            "registrations",
+            JSON.stringify(registrations)
+        );
+
+        // Display success message
         message.textContent =
             "Thank you, " + name +
             "! Your registration for " + selected +
             " is complete.";
 
+        message.className = "success-message success";
+
+        // Clear form
         form.reset();
     });
 </script>
+
 
 </body>
 </html>

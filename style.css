@@ -445,3 +445,16 @@ footer {
     font-size: 13px;
     font-weight: 600;
 }
+
+.success-message {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.success-message.error {
+    color: red;
+}
+
+.success-message.success {
+    color: green;
+}
