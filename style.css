@@ -428,3 +428,20 @@ footer {
         gap: 14px;
     }
 }
+.seat-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    color: #25845c;
+}
+
+.seat-info strong {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.seat-info span {
+    font-size: 13px;
+    font-weight: 600;
+}
